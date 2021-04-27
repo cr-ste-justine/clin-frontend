@@ -11,14 +11,12 @@ import IconKit from 'react-icons-kit';
 import {
   ic_keyboard_arrow_right, ic_tune, ic_close, ic_search, ic_keyboard_arrow_down,
 } from 'react-icons-kit/md';
-import { SearchOutlined, FileTextOutlined } from '@ant-design/icons';
+import { SearchOutlined } from '@ant-design/icons';
 import debounce from 'lodash/debounce';
-import style from '../../../containers/App/style.module.scss';
 import './style.scss';
 
 import PatientCreation from '../PatientCreation';
 import { createCellRenderer } from '../../Table/index';
-import InteractiveTable from '../../Table/InteractiveTable';
 import { searchShape } from '../../../reducers/search';
 import { navigateToPatientScreen, navigateToSubmissionScreen } from '../../../actions/router';
 import {
@@ -28,6 +26,7 @@ import { updateUserColumns, updateUserColumnsOrder, updateUserColumnsReset } fro
 import { generateNanuqReport } from '../../../actions/nanuq';
 import { appShape } from '../../../reducers/app';
 import Layout from '../../Layout';
+import PrescriptionTable from './components/PrescriptionTable';
 
 class PatientSearchScreen extends React.Component {
   constructor(props) {
@@ -587,7 +586,7 @@ class PatientSearchScreen extends React.Component {
     const { patient } = search;
     const { total } = patient;
     const {
-      size, page, isFacetOpen, facet, selectedPatients, totalLength, columnPreset,
+      size, page, isFacetOpen, facet, totalLength, columnPreset,
     } = this.state;
 
     const { Title } = Typography;
@@ -720,64 +719,43 @@ class PatientSearchScreen extends React.Component {
             ) }
             <Col className={isFacetOpen ? 'table table-facet' : 'table'}>
               <Card bordered={false} className="tablePatient">
-                { defaultColumns != null && (
-                  <InteractiveTable
-                    key="patient-interactive-table"
-                    size={size}
-                    page={page}
-                    total={total}
-                    totalLength={totalLength}
-                    defaultVisibleColumns={defaultColumns}
-                    defaultColumnsOrder={defaultColumnsOrder}
-                    schema={columnPreset}
-                    columnWidth={columnPreset.map((c) => c.columnWidth)}
-                    pageChangeCallback={this.handlePageChange}
-                    pageSizeChangeCallback={this.handlePageSizeChange}
-                    exportCallback={this.exportToTsv}
-                    numFrozenColumns={2}
-                    isLoading={showSubloadingAnimation}
-                    rowHeights={rowHeights}
-                    columnsUpdated={this.handleColumnsUpdated}
-                    columnsOrderUpdated={this.handleColumnsOrderUpdated}
-                    columnsReset={this.handleColumnsReset}
-                    customHeader={(
-                      <Row align="middle" gutter={32}>
-                        <Tabs
-                          className="patientSearch__tabs"
-                          activeKey={search.type}
-                          onChange={(key) => {
-                            actions.changeSearchType(key);
-                          }}
-                        >
-                          <Tabs.TabPane tab={intl.get('screen.patientsearch.tabs.prescriptions')} key="prescriptions" />
-                          <Tabs.TabPane tab={intl.get('screen.patientsearch.tabs.patients')} key="patients" />
-                        </Tabs>
-                        { selectedPatients.length > 0 && (
-                          <>
-                            <Col>
-                              <Typography.Text> {
-                                intl.get('screen.patientsearch.table.selectedPatients',
-                                  { count: selectedPatients.length })
-                              }
-                              </Typography.Text>
-                            </Col>
-                          </>
-                        ) }
-                        <Col flex={1} className="patientSearch__table__header__nanuq">
-                          <Button
-                            className={[style.btn, style.btnSec].join(' ')}
-                            disabled={selectedPatients.length === 0}
-                            onClick={() => actions.generateNanuqReport(selectedPatients)}
-                          >
-                            <FileTextOutlined />
-                            { intl.get('screen.patientsearch.table.nanuq') }
-                          </Button>
-                          <Divider type="vertical" />
-                        </Col>
-                      </Row>
+                <Tabs
+                  className="patientSearch__tabs"
+                  activeKey={search.type}
+                  onChange={(key) => {
+                    actions.changeSearchType(key);
+                  }}
+                >
+                  <Tabs.TabPane
+                    key="prescriptions"
+                    tab={(
+                      <span className="tabName">
+                        { intl.get('screen.patientsearch.tabs.prescriptions') }
+                      </span>
                     )}
-                  />
-                ) }
+                  >
+                    <PrescriptionTable
+                      defaultColumns
+                      size={size}
+                      page={page}
+                      total={total}
+                      totalLength={totalLength}
+                      defaultVisibleColumns={defaultColumns}
+                      defaultColumnsOrder={defaultColumnsOrder}
+                      schema={columnPreset}
+                      pageChangeCallback={this.handlePageChange}
+                      pageSizeChangeCallback={this.handlePageSizeChange}
+                      exportCallback={this.exportToTsv}
+                      numFrozenColumns={2}
+                      isLoading={showSubloadingAnimation}
+                      rowHeights={rowHeights}
+                      columnsUpdated={this.handleColumnsUpdated}
+                      columnsOrderUpdated={this.handleColumnsOrderUpdated}
+                      columnsReset={this.handleColumnsReset}
+                    />
+                  </Tabs.TabPane>
+                  <Tabs.TabPane tab={intl.get('screen.patientsearch.tabs.patients')} key="patients" />
+                </Tabs>
               </Card>
             </Col>
           </Row>
