@@ -306,6 +306,7 @@ const en = {
   'screen.patientsearch.table.ramq': 'RAMQ',
   'screen.patientsearch.table.familyId': 'Family ID',
   'screen.patientsearch.table.familyType': 'Family Type',
+  'screen.patientsearch.table.nbPrescription': 'Prescription count',
   'screen.patientsearch.table.ethnicity': 'Ethnicity',
   'screen.patientsearch.table.bloodRelationship': 'Blood Relationship',
   'screen.patientsearch.download': 'Download Page to TSV',
