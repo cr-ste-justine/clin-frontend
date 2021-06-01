@@ -9,7 +9,7 @@ import {
   Tabs, Button, Spin, Badge, Card, Popover, Menu, Dropdown,
 } from 'antd';
 import { DownOutlined, MedicineBoxFilled } from '@ant-design/icons';
-
+import find from 'lodash/find';
 import IconKit from 'react-icons-kit';
 import {
   ic_info_outline, ic_widgets, ic_cloud_download, ic_people,
@@ -251,12 +251,12 @@ class PatientScreen extends React.Component {
 
   render() {
     const {
-      app, router, patient,
+      app, router, patient, prescriptions,
     } = this.props;
     const { showSubloadingAnimation } = app;
     const { hash } = router.location;
     const hashParams = (hash.replace('#', '') || '').split('&');
-
+    const asVariant = find(prescriptions, { status: 'completed' }) === undefined;
     const tabs = [
       {
         name: 'prescriptions',
@@ -266,6 +266,7 @@ class PatientScreen extends React.Component {
             { intl.get('screen.patient.tab.prescriptions') }
           </span>),
         content: <PrescriptionsTab />,
+        disabled: false,
       },
       {
         name: 'family',
@@ -275,6 +276,7 @@ class PatientScreen extends React.Component {
             { intl.get('screen.patient.tab.family') }
           </span>),
         content: <FamilyTab />,
+        disabled: false,
       },
       {
         name: 'variant',
@@ -285,6 +287,7 @@ class PatientScreen extends React.Component {
           </span>
         ),
         content: <PatientVariantScreen />,
+        disabled: patient.id.includes('PA') ? false : asVariant,
       },
       {
         name: 'files',
@@ -295,6 +298,7 @@ class PatientScreen extends React.Component {
           </span>
         ),
         content: <FilesTab />,
+        disabled: false,
       },
     ];
     const defaultTab = tabs.map((t) => t.name).includes(hashParams[0]) ? hashParams[0] : 'prescriptions';
@@ -319,6 +323,7 @@ class PatientScreen extends React.Component {
                         key={tab.name}
                         style={{ height: '100%' }}
                         tab={tab.title}
+                        disabled={tab.disabled}
                       >
                         { tab.content }
                       </Tabs.TabPane>
