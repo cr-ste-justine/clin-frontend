@@ -146,6 +146,7 @@ const Prescriptions: React.FC<Props> = ({ prescriptions, clinicalImpressions }) 
             const clinicalImpression = findClinicalImpression(prescription, clinicalImpressions);
             const editablePrescription = canEdit(prescription);
             const isDraft = prescription.status === 'draft';
+            console.log('prescription.status', prescription.status);
             const getInitalStatus = () => {
               if (prescription.status === 'on-hold') {
                 return StatusType.submitted;
@@ -166,7 +167,7 @@ const Prescriptions: React.FC<Props> = ({ prescriptions, clinicalImpressions }) 
                 }
                 key={prescription.id}
               >
-                { prescription.status === 'draft' && (
+                { (prescription.status === 'draft' || prescription.status === 'incomplete') && (
                   <Alert
                     banner
                     message={(

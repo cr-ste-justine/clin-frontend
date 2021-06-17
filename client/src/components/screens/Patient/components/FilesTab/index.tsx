@@ -70,7 +70,7 @@ const FilesTab: React.FC = () => {
               window.open(await getURL(url.file), '_blank');
             }}
           >
-            File
+            { intl.get('screen.patient.details.file.download.file') }
           </Button>
         </Menu.Item>
       ),
